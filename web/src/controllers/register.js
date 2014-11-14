@@ -15,9 +15,9 @@ function getRandomInt(min, max) {
   return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
-module.exports = function(pkg, app) {
-  var User = includeModel(pkg.oils.userModel);
-  return {
+
+  var User = web.includeModel(pkg.oils.userModel);
+module.exports = {
 
     get: function(req, res) {
       var qIndex = getRandomInt(0, questions.length-1);
@@ -60,4 +60,3 @@ module.exports = function(pkg, app) {
       })
     }
   }
-}

@@ -1,16 +1,14 @@
 var passport = require('passport');
-module.exports = function(pkg, app) {
- 
-  return {
+module.exports = {
 
     get: function(req, res) {
       var r = req.query.r || '';
       var username = req.query.username || '';
-      res.renderFile(pkg.oils.loginView, {r: r, username: username});
+      res.renderFile(web.eitherPath('/web/src/views/login.html', './web/src/views/login.html'), {r: r, username: username});
     },
     post: function(req,res) {
 
-      var redirectAfterLogin = req.body.r || pkg.oils.redirectAfterLogin;
+      var redirectAfterLogin = req.body.r || '/';
 
       passport.authenticate('local', { 
         //successRedirect: '/login-success' + param,
@@ -22,4 +20,3 @@ module.exports = function(pkg, app) {
   }
 
 
-}

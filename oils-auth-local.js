@@ -1,17 +1,26 @@
 var passport = require('passport'), 
   LocalStrategy = require('passport-local').Strategy;
 
-var mongoose = include('mongoose');
+var mongoose = require('mongoose');
 
-module.exports = function(web, next) {
+module.exports = function(pluginConf, web, next) {
   var self = this;
 
-  app.on('beforeRender', function(view, options, callback, req, res) {
+  pluginConf = web.utils.extend({
+                                "loginView": "/node_modules/oils-plugin-auth/views/login.html",
+                                "registerView": "/node_modules/oils-plugin-auth/views/register.html",
+                                "userModel": "/node_modules/oils-plugin-auth/web/src/models/User.js"
+                                },
+                                pluginConf);
+  
+  
+
+  web.on('beforeRender', function(view, options, callback, req, res) {
     options._user = req.user;
   })  
 
-  app.on('initServer', function() {
-  var User = includeModel(pkg.oils.userModel);
+  web.on('initServer', function() {
+  var User = web.includeModel(pkg.oils.userModel);
 
   passport.use(new LocalStrategy(
     function(username, password, done) {
@@ -44,7 +53,7 @@ module.exports = function(web, next) {
     ));
 
 
-    var server = app.server;
+    var express = web.app;
 
 
     passport.serializeUser(function(user, done2) {
@@ -59,9 +68,9 @@ module.exports = function(web, next) {
       });
     });
 
-    server.use(passport.initialize());
+    express.use(passport.initialize());
 
-    server.use(passport.session());
+    express.use(passport.session());
 
   });
 
@@ -75,9 +84,9 @@ module.exports = function(web, next) {
       res.redirect(pkg.oils.redirectAfterLogin);
     },*/
 
-    '/login': require('./controllers/login.js')(pkg, web),
+    '/login': web.include('/node_modules/oils-plugin-auth/controllers/login.js'),
 
-    '/register': require('./controllers/register.js')(pkg, web)
+    '/register': web.include(web.eitherPath('/node_modules/oils-plugin-auth/web/src/controllers/register.js', '.web/src/controllers/register.js'))
   });
 
   next();
