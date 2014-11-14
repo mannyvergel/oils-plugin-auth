@@ -1,3 +1,4 @@
+
 var passport = require('passport');
 
 var questions = [
@@ -15,13 +16,15 @@ function getRandomInt(min, max) {
   return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
+var pluginConf = web.plugins['oils-plugin-auth'].conf;
 
-  var User = web.includeModel(pkg.oils.userModel);
+
+  var User = web.includeModel(pluginConf.userModel);
 module.exports = {
 
     get: function(req, res) {
       var qIndex = getRandomInt(0, questions.length-1);
-      res.renderFile(pkg.oils.registerView, {questions: questions, qIndex: qIndex});
+      res.renderFile(pluginConf.registerView, {questions: questions, qIndex: qIndex});
     },
     post: function(req,res) {
 
@@ -35,7 +38,7 @@ module.exports = {
       var answer = req.body.a || '';
       if (questions[qIndex].a != answer.toLowerCase()) {
         req.flash('error', 'Invalid answer to the question.');
-        res.renderFile(pkg.oils.registerView, {user: user, qIndex: qIndex, questions: questions, answer: answer});
+        res.renderFile(pluginConf.registerView, {user: user, qIndex: qIndex, questions: questions, answer: answer});
         return;
       } 
 
@@ -48,11 +51,11 @@ module.exports = {
             req.flash('error', err.errors[i].message);
           }
 
-          res.renderFile(pkg.oils.registerView, {user: user, qIndex: qIndex, questions: questions, answer: answer});
+          res.renderFile(pluginConf.registerView, {user: user, qIndex: qIndex, questions: questions, answer: answer});
         } else {
           var myNext = function() {
             req.flash('info', 'Successfully registered and authenticated.');
-            res.redirect(pkg.oils.redirectAfterLogin);
+            res.redirect(pluginConf.redirectAfterLogin);
           }
           passport.authenticate('local')(req, res, myNext);
           

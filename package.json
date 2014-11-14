@@ -26,20 +26,16 @@
   "dependencies": {
     "passport": "0.2.x",
     "passport-local": "0.1.x",
-    "mongoose": "3.8.x"
+    "mongoose": "3.8.x",
+    "validator": "3.x",
+    "bcrypt": "0.7.x",
+    "mongoose-unique-validator": "0.3.x"
 
   },
   "devDependencies": {},
   "bundleDependencies": [],
 
   "private": true,
-  "main": "oils-auth-local.js",
-  "oils" : {
-    "enabled": true,
-    "loginView": "/conf/plugins/oils-auth-local/views/login.html",
-    "registerView": "/conf/plugins/oils-auth-local/views/register.html",
-    "userModel": "/web/src/models/User.js",
-    "redirectAfterLogin": "/"
-  }
+  "main": "oils-auth-local.js"
   
 }

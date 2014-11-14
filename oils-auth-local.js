@@ -7,20 +7,21 @@ module.exports = function(pluginConf, web, next) {
   var self = this;
 
   pluginConf = web.utils.extend({
-                                "loginView": "/node_modules/oils-plugin-auth/views/login.html",
-                                "registerView": "/node_modules/oils-plugin-auth/views/register.html",
-                                "userModel": "/node_modules/oils-plugin-auth/web/src/models/User.js"
-                                },
-                                pluginConf);
+    "loginView": "/node_modules/oils-plugin-auth/views/login.html",
+    "registerView": "/node_modules/oils-plugin-auth/views/register.html",
+    "userModel": "/node_modules/oils-plugin-auth/models/User.js",
+    "redirectAfterLogin": "/"
+    },
+    pluginConf);
   
-  
+  this.conf = pluginConf;
 
   web.on('beforeRender', function(view, options, callback, req, res) {
     options._user = req.user;
   })  
 
   web.on('initServer', function() {
-  var User = web.includeModel(pkg.oils.userModel);
+  var User = web.includeModel(pluginConf.userModel);
 
   passport.use(new LocalStrategy(
     function(username, password, done) {
@@ -86,7 +87,7 @@ module.exports = function(pluginConf, web, next) {
 
     '/login': web.include('/node_modules/oils-plugin-auth/controllers/login.js'),
 
-    '/register': web.include(web.eitherPath('/node_modules/oils-plugin-auth/web/src/controllers/register.js', '.web/src/controllers/register.js'))
+    '/register': web.include('/node_modules/oils-plugin-auth/controllers/register.js')
   });
 
   next();
