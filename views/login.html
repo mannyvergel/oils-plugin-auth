@@ -1,0 +1,31 @@
+{% extends 'templates/main.html' %}
+
+{% block title %}Login{% endblock %}
+
+{% block head %}
+{% endblock %}
+
+{% block content %}
+
+
+
+<div class="row">
+  
+  <div class="medium-4 medium-centered columns">
+  <h1>Login</h1>
+    <form action="/login" method="post"> 
+      <input type="hidden" name="r" value="{{r}}"/>
+      <input type="text" name="username" placeholder="Email / Username" value="{{username}}"/> 
+      <input type="password" name="password" placeholder="Password"/> 
+      <input type="submit" value="Log In" class="small button"/>
+    </form>
+
+    <p>No account yet? <a href="/register">Register here</a>.
+  </div>
+  
+  
+</div>
+
+{% endblock %}
+
+

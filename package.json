@@ -1,0 +1,45 @@
+{
+  "name": "oils-auth-local",
+  "version": "1.0.0",
+  "description": "Oils js authentication plugin using passport js.",
+  "keywords": [
+  	"oils",
+    "passport",
+    "authentication",
+    "authorization"
+  ],
+  "author": {
+    "name": "Manny Vergel",
+    "email": "manny@mvergel.com",
+    "url": "http://www.mvergel.com/"
+  },
+  "homepage": "http://mannyvergel.github.io/oils-js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/mannyvergel/oils-js.git"
+  },
+
+  "engines": {
+    "node": ">= 0.10.0"
+  },
+
+  "dependencies": {
+    "passport": "0.2.x",
+    "passport-local": "0.1.x",
+    "mongoose": "3.8.x"
+
+  },
+  "devDependencies": {},
+  "bundleDependencies": [],
+
+  "private": true,
+  "main": "oils-auth-local.js",
+  "oils" : {
+    "enabled": true,
+    "loginView": "/conf/plugins/oils-auth-local/views/login.html",
+    "registerView": "/conf/plugins/oils-auth-local/views/register.html",
+    "userModel": "/web/src/models/User.js",
+    "redirectAfterLogin": "/"
+  }
+  
+}
