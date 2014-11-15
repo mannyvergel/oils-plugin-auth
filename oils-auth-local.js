@@ -3,6 +3,8 @@ var passport = require('passport'),
 
 var mongoose = require('mongoose');
 
+
+
 module.exports = function(pluginConf, web, next) {
   var self = this;
 
@@ -81,9 +83,9 @@ module.exports = function(pluginConf, web, next) {
       res.redirect('/');
     },
     
-    /*'/login-success': function(req,res) {
-      res.redirect(pkg.oils.redirectAfterLogin);
-    },*/
+    //'/login-success': function(req,res) {
+    //  res.redirect(pkg.oils.redirectAfterLogin);
+    //},
 
     '/login': web.include('/node_modules/oils-plugin-auth/controllers/login.js'),
 
@@ -94,4 +96,5 @@ module.exports = function(pluginConf, web, next) {
 
 
 }
+
 
