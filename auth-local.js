@@ -5,7 +5,7 @@ var mongoose = require('mongoose');
 
 
 
-module.exports = function(pluginConf, web, next) {
+module.exports = function AuthLocal(pluginConf, web, next) {
   var self = this;
 
   pluginConf = web.utils.extend({

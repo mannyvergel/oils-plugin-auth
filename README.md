@@ -1,4 +1,8 @@
 oils-plugin-auth
 ================
 
-Oils authentication plugin
+Authentication plugin for oils version 1.x
+
+Installation:
+
+```npm install oils-plugin-auth```

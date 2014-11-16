@@ -1,5 +1,5 @@
 {
-  "name": "oils-auth-local",
+  "name": "oils-plugin-auth",
   "version": "1.0.0",
   "description": "Oils js authentication plugin using passport js.",
   "keywords": [
@@ -36,6 +36,6 @@
   "bundleDependencies": [],
 
   "private": true,
-  "main": "oils-auth-local.js"
+  "main": "auth-local.js"
   
 }
