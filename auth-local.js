@@ -8,6 +8,8 @@ var mongoose = require('mongoose');
 module.exports = function AuthLocal(pluginConf, web, next) {
   var self = this;
 
+  web.auth = new Object();
+
   pluginConf = web.utils.extend({
     "loginView": "/node_modules/oils-plugin-auth/views/login.html",
     "registerView": "/node_modules/oils-plugin-auth/views/register.html",
@@ -24,6 +26,8 @@ module.exports = function AuthLocal(pluginConf, web, next) {
 
   web.on('initServer', function() {
   var User = web.includeModel(pluginConf.userModel);
+  
+  web.auth.UserModel = User;
 
   passport.use(new LocalStrategy(
     function(username, password, done) {

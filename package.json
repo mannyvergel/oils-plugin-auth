@@ -1,6 +1,6 @@
 {
   "name": "oils-plugin-auth",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Oils js authentication plugin using passport js.",
   "keywords": [
   	"oils",
@@ -13,10 +13,10 @@
     "email": "manny@mvergel.com",
     "url": "http://www.mvergel.com/"
   },
-  "homepage": "http://mannyvergel.github.io/oils-js",
+  "homepage": "http://www.github.com/mannyvergel/oils-plugin-auth",
   "repository": {
     "type": "git",
-    "url": "https://github.com/mannyvergel/oils-js.git"
+    "url": "https://github.com/mannyvergel/oils-plugin-auth.git"
   },
 
   "engines": {
