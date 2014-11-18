@@ -3,8 +3,6 @@ var passport = require('passport'),
 
 var mongoose = require('mongoose');
 
-
-
 module.exports = function AuthLocal(pluginConf, web, next) {
   var self = this;
 
@@ -24,7 +22,6 @@ module.exports = function AuthLocal(pluginConf, web, next) {
     options._user = req.user;
   })  
 
-  web.on('initServer', function() {
   var User = web.includeModel(pluginConf.userModel);
   
   web.auth.UserModel = User;
@@ -50,10 +47,7 @@ module.exports = function AuthLocal(pluginConf, web, next) {
             } else {
               return done(null, false, { message: 'Incorrect password or password.' });
             }
-            //console.log('Password123:', isMatch); // -&gt; Password123: true
         });
-
-  
 
         
       });
@@ -80,17 +74,11 @@ module.exports = function AuthLocal(pluginConf, web, next) {
 
     express.use(passport.session());
 
-  });
-
   web.applyRoutes({
     '/logout': function(req, res){
       req.logout();
       res.redirect('/');
     },
-    
-    //'/login-success': function(req,res) {
-    //  res.redirect(pkg.oils.redirectAfterLogin);
-    //},
 
     '/login': web.include('/node_modules/oils-plugin-auth/controllers/login.js'),
 
