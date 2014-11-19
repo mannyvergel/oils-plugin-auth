@@ -1,6 +1,6 @@
 {
   "name": "oils-plugin-auth",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "Oils js authentication plugin using passport js.",
   "keywords": [
   	"oils",

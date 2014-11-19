@@ -8,10 +8,13 @@ module.exports = function AuthLocal(pluginConf, web, next) {
 
   web.auth = self;
 
+
+  var pluginPath = pluginConf.pluginPath;
+
   pluginConf = web.utils.extend({
-    "loginView": "/node_modules/oils-plugin-auth/views/login.html",
-    "registerView": "/node_modules/oils-plugin-auth/views/register.html",
-    "userModel": "/node_modules/oils-plugin-auth/models/User.js",
+    "loginView": pluginPath + "/views/login.html",
+    "registerView": pluginPath + "/views/register.html",
+    "userModel": pluginPath + "/models/User.js",
     "redirectAfterLogin": "/"
     },
     pluginConf);
@@ -80,9 +83,9 @@ module.exports = function AuthLocal(pluginConf, web, next) {
       res.redirect('/');
     },
 
-    '/login': web.include('/node_modules/oils-plugin-auth/controllers/login.js'),
+    '/login': web.include(pluginPath + '/controllers/login.js'),
 
-    '/register': web.include('/node_modules/oils-plugin-auth/controllers/register.js')
+    '/register': web.include(pluginPath + '/controllers/register.js')
   });
 
   next();
