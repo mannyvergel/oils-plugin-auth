@@ -24,8 +24,10 @@
       <input type="text" name="fullname" placeholder="Full Name" value="{{user.fullname}}"  style="max-width: 400px;"/>
       <input type="text" name="nickname" placeholder="Nickname" value="{{user.nickname}}"  style="max-width: 400px;"/> 
 
-      <p style="margin-bottom: 0;">{{questions[qIndex].q}} (to verify you're human)</p>
+      <label style="margin-bottom: 0;">{{questions[qIndex].q}} (to verify you're human)
       <input type="text" name="a" placeholder="Your answer" value="{{answer}}"  style="max-width: 400px;"/> 
+      </label>
+      
       <input type="hidden" name="qIndex" value="{{qIndex}}"/> 
 
       <input type="submit" value="Register" class="small button"/>

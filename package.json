@@ -4,6 +4,7 @@
   "description": "Oils js authentication plugin using passport js.",
   "keywords": [
   	"oils",
+    "plugin",
     "passport",
     "authentication",
     "authorization"
