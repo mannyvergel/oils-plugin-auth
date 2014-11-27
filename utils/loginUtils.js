@@ -7,18 +7,33 @@ exports.handleLogin = function(req, res, next) {
 
 exports.handleRole = function(role, req, res, next) {
   var isLoggedIn = req.isAuthenticated();
-  if (isLoggedIn && req.user.role == role) { return next(); }
+
+  if (!(role instanceof Array)) {
+    role = [role];
+  }
+
+  if (isLoggedIn && hasRole(role, req.user.role)) { return next(); }
 
   var message;
 
   if (isLoggedIn) {
-  	message = 'You have no access to this page.';
+    message = 'You have no access to this page.';
   } else {
-  	message = 'Please login to access this page.';
+    message = 'Please login to access this page.';
   }
 
   req.flash('error', message);
   res.redirect('/login?r=' + encodeURIComponent(req.url));
+}
+
+function hasRole(roles, role) {
+  for (var i in roles) {
+    if (roles[i] == role) {
+      return true;
+    }
+  }
+
+  return false;
 }
 
 exports.handleAdmin = function(req, res, next) {
