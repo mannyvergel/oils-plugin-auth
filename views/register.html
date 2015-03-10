@@ -1,4 +1,4 @@
-{% extends 'templates/main.html' %}
+'{% extends 'templates/main.html' %}
 
 {% block title %}Register{% endblock %}
 
@@ -14,15 +14,18 @@
   <div class="medium-6 columns medium-centered">
   <h1>Register</h1>
     <form action="/register" method="post"> 
-      
-       <input type="text" name="username" placeholder="Username" value="{{user.username}}" style="max-width: 400px;"/> 
+      {%if needsInvitation%}
+      <input type="text" name="invitationCode" placeholder="Invitation Code" value="" style="max-width: 400px;"/>
+      {%endif%}
+
+      <input type="text" name="fullname" placeholder="Full Name" value="{{user.fullname}}"  style="max-width: 400px;"/>
+       
+      <input type="text" name="email" placeholder="Email" value="{{user.email}}"  style="max-width: 400px;"/> 
       
       <input type="password" name="password" placeholder="Password" value="" style="max-width: 400px;"/> 
       <input type="password" name="confirmPassword" placeholder="Confirm Password" value=""  style="max-width: 400px;"/> 
 
-      <input type="text" name="email" placeholder="Email" value="{{user.email}}"  style="max-width: 400px;"/> 
-      <input type="text" name="fullname" placeholder="Full Name" value="{{user.fullname}}"  style="max-width: 400px;"/>
-      <input type="text" name="nickname" placeholder="Nickname" value="{{user.nickname}}"  style="max-width: 400px;"/> 
+      
 
       <label style="margin-bottom: 0;">{{questions[qIndex].q}} (to verify you're human)
       <input type="text" name="a" placeholder="Your answer" value="{{answer}}"  style="max-width: 400px;"/> 
@@ -30,7 +33,8 @@
       
       <input type="hidden" name="qIndex" value="{{qIndex}}"/> 
 
-      <input type="submit" value="Register" class="small button"/>
+      <button type="submit" class="small button">Register</button>
+      
     </form>
 
   </div>

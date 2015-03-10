@@ -1,9 +1,9 @@
 {
   "name": "oils-plugin-auth",
-  "version": "1.0.5",
+  "version": "1.0.6",
   "description": "Oils js authentication plugin using passport js.",
   "keywords": [
-  	"oils",
+    "oils",
     "plugin",
     "passport",
     "authentication",
@@ -19,11 +19,9 @@
     "type": "git",
     "url": "https://github.com/mannyvergel/oils-plugin-auth.git"
   },
-
   "engines": {
     "node": ">= 0.10.0"
   },
-
   "dependencies": {
     "passport": "0.2.x",
     "passport-local": "0.1.x",
@@ -32,11 +30,33 @@
     "bcrypt": "0.7.x",
     "mongoose-unique-validator": "0.3.x"
   },
-  
   "devDependencies": {},
   "bundleDependencies": [],
-
   "private": false,
-  "main": "auth-local.js"
-  
+  "main": "auth-local.js",
+  "gitHead": "cd8852a0421a29f29bf03bb0c95acab021f382a7",
+  "bugs": {
+    "url": "https://github.com/mannyvergel/oils-plugin-auth/issues"
+  },
+  "_id": "oils-plugin-auth@1.0.5",
+  "scripts": {},
+  "_shasum": "18f77baa11d7d37498eba3fad4f4b340a0f25e89",
+  "_from": "oils-plugin-auth@1.0.5",
+  "_npmVersion": "1.4.28",
+  "_npmUser": {
+    "name": "mannyvergel",
+    "email": "manny@mvergel.com"
+  },
+  "maintainers": [
+    {
+      "name": "mannyvergel",
+      "email": "manny@mvergel.com"
+    }
+  ],
+  "dist": {
+    "shasum": "18f77baa11d7d37498eba3fad4f4b340a0f25e89",
+    "tarball": "http://registry.npmjs.org/oils-plugin-auth/-/oils-plugin-auth-1.0.5.tgz"
+  },
+  "directories": {},
+  "_resolved": "https://registry.npmjs.org/oils-plugin-auth/-/oils-plugin-auth-1.0.5.tgz"
 }

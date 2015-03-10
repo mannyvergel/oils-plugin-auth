@@ -1,5 +1,5 @@
 var validator = require('validator');
-var bcrypt = require('bcrypt'),
+var bcrypt = web.include('/node_modules/bcrypt'),
     SALT_WORK_FACTOR = 12; // same as nodebb
 
 var emailValidator = [function(val) {
@@ -8,6 +8,10 @@ var emailValidator = [function(val) {
 }, 'Invalid email.'];
 
 var uniqueValidator = require('mongoose-unique-validator');
+
+var mongoose = require('mongoose');
+var Schema = mongoose.Schema,
+    ObjectId = Schema.ObjectId;
 
 /*var passwordValidator = [function(val) {
   var user = this;
@@ -18,11 +22,11 @@ var uniqueValidator = require('mongoose-unique-validator');
 var User = {
   name: 'User',
   schema: {
-    username: {type: String, index: true, unique: true, required: true},
+    username: {type: String, index: true, unique: true, required: true, lowercase: true, trim: true},
     password: {type: String, required: true},
     nickname: String,
     fullname: {type: String, required: true},
-    email: {type: String, required: true, validate: emailValidator, unique: true},
+    email: {type: String, required: true, validate: emailValidator, unique: true, lowercase: true, trim: true},
     role: {type: String, default:'USER'}
   },
 

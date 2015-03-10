@@ -7,21 +7,25 @@ module.exports = function AuthLocal(pluginConf, web, next) {
   var self = this;
 
   web.auth = self;
-
+  web.lib = web.lib || {};
+  web.lib.mongoose = mongoose;
 
   var pluginPath = pluginConf.pluginPath;
 
   pluginConf = web.utils.extend({
-    "loginView": pluginPath + "/views/login.html",
-    "registerView": pluginPath + "/views/register.html",
-    "userModel": pluginPath + "/models/User.js",
-    "redirectAfterLogin": "/"
+      loginView: pluginPath + "/views/login.html",
+      registerView: pluginPath + "/views/register.html",
+      userModel: pluginPath + "/models/User.js",
+      redirectAfterLogin: "/action/after-login",
+      registrationEnabled: true,
+      needsInvitation: false
     },
     pluginConf);
   
   web.auth.conf = pluginConf;
 
   web.on('beforeRender', function(view, options, callback, req, res) {
+    options = options || {};
     options._user = req.user;
   })  
 
@@ -30,6 +34,9 @@ module.exports = function AuthLocal(pluginConf, web, next) {
   web.auth.UserModel = User;
   web.auth.loginUtils = require('./utils/loginUtils');
 
+
+  web.lib = web.lib || {};
+  web.lib.passport = passport;
   passport.use(new LocalStrategy(
     function(username, password, done) {
 
@@ -77,6 +84,8 @@ module.exports = function AuthLocal(pluginConf, web, next) {
 
     express.use(passport.session());
 
+
+
   web.applyRoutes({
     '/logout': function(req, res){
       req.logout();
@@ -85,7 +94,8 @@ module.exports = function AuthLocal(pluginConf, web, next) {
 
     '/login': web.include(pluginPath + '/controllers/login.js'),
 
-    '/register': web.include(pluginPath + '/controllers/register.js')
+    '/register': web.include(pluginPath + '/controllers/register.js'),
+    '/action/after-login': web.include(pluginPath + '/controllers/action/after-login.js')
   });
 
   next();
