@@ -29,7 +29,8 @@ module.exports = {
         throw new Error("Registration is not enabled.");
       }
       var qIndex = getRandomInt(0, questions.length-1);
-      res.renderFile(pluginConf.registerView, {questions: questions, qIndex: qIndex, needsInvitation: pluginConf.needsInvitation});
+      res.renderFile(pluginConf.registerView, {questions: questions, qIndex: qIndex, 
+        needsInvitation: pluginConf.needsInvitation, humanTest: pluginConf.humanTest});
     },
     post: function(req,res) {
 
@@ -51,7 +52,11 @@ module.exports = {
 
       var errorMsgs = [];
 
-      if (questions[qIndex].a != answer.toLowerCase()) {
+      if (req.body.password != req.body.confirmPassword) {
+        errorMsgs.push('Passwords do not match.');
+      }
+
+      if (pluginConf.humanTest && questions[qIndex].a != answer.toLowerCase()) {
         errorMsgs.push('Invalid answer to the question.');
       }
 

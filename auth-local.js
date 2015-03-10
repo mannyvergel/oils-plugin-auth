@@ -18,7 +18,8 @@ module.exports = function AuthLocal(pluginConf, web, next) {
       userModel: pluginPath + "/models/User.js",
       redirectAfterLogin: "/action/after-login",
       registrationEnabled: true,
-      needsInvitation: false
+      needsInvitation: false,
+      humanTest: true
     },
     pluginConf);
   
