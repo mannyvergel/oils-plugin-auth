@@ -68,7 +68,7 @@ module.exports = {
           req.flash('error', errorMsgs[i]);
         }
         
-        res.renderFile(pluginConf.registerView, {user: user, qIndex: qIndex, questions: questions, answer: answer});
+        res.renderFile(pluginConf.registerView, {needsInvitation: pluginConf.needsInvitation, user: user, qIndex: qIndex, questions: questions, answer: answer});
         return;
       } 
 
@@ -103,7 +103,7 @@ module.exports = {
             for (var i in err.errors) {
               req.flash('error', err.errors[i].message);
             }
-            res.renderFile(pluginConf.registerView, {user: user, qIndex: qIndex, questions: questions, answer: answer});
+            res.renderFile(pluginConf.registerView, {needsInvitation: pluginConf.needsInvitation, user: user, qIndex: qIndex, questions: questions, answer: answer});
           } else {
             req.login(user, function(err) {
               if (err) { throw err; }
