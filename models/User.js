@@ -9,7 +9,7 @@ var emailValidator = [function(val) {
 
 var uniqueValidator = require('mongoose-unique-validator');
 
-var mongoose = require('mongoose');
+var mongoose = web.lib.mongoose;
 var Schema = mongoose.Schema,
     ObjectId = Schema.ObjectId;
 

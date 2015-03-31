@@ -1,14 +1,13 @@
 var passport = require('passport'), 
   LocalStrategy = require('passport-local').Strategy;
 
-var mongoose = require('mongoose');
+
 
 module.exports = function AuthLocal(pluginConf, web, next) {
+  var mongoose = web.lib.mongoose;
   var self = this;
 
   web.auth = self;
-  web.lib = web.lib || {};
-  web.lib.mongoose = mongoose;
 
   var pluginPath = pluginConf.pluginPath;
 
