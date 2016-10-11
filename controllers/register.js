@@ -109,8 +109,8 @@ module.exports = {
               if (err) { throw err; }
 
               req.flash('info', 'Successfully registered and authenticated.');
-
-              return res.redirect('/');
+              dmsUtils.deletePath(invitationPath);
+              return res.redirect(pluginConf.redirectAfterLogin);
             });
 
             // var myNext = function() {
