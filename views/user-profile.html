@@ -1,0 +1,38 @@
+'{% extends 'templates/main.html' %}
+
+{% block title %}User Profile{% endblock %}
+
+{% block head %}
+{% endblock %}
+
+{% block content %}
+
+
+
+<div class="row">
+  
+  <div class="medium-6 columns medium-centered">
+  <h1>User Profile</h1>
+    <form action="/user-profile" method="post"> 
+      <p>Username: {{_user.username}}</p>
+      <input type="text" name="fullname" placeholder="Full Name" value="{{_user.fullname}}"/>
+       
+      <input type="text" name="email" placeholder="Email" value="{{_user.email}}"/> 
+      
+      <p>Fill in password fields if you want to change it</p>
+      <input type="password" name="oldPassword" placeholder="Old Password" value=""/> 
+      <input type="password" name="password" placeholder="Password" value=""/> 
+      <input type="password" name="confirmPassword" placeholder="Confirm Password" value=""/> 
+
+      <button type="submit" class="small button">Save</button>
+      
+    </form>
+
+  </div>
+  
+  
+</div>
+
+{% endblock %}
+
+

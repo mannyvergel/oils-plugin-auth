@@ -14,11 +14,20 @@ module.exports = function AuthLocal(pluginConf, web, next) {
   pluginConf = web.utils.extend({
       loginView: pluginPath + "/views/login.html",
       registerView: pluginPath + "/views/register.html",
+      userProfileView: pluginPath + "/views/user-profile.html",
       userModel: pluginPath + "/models/User.js",
       redirectAfterLogin: "/action/after-login",
       registrationEnabled: true,
       needsInvitation: false,
-      humanTest: true
+      humanTest: true,
+      invitationContentHandler: function(user, doc) {
+        user.role = doc.content;
+      },
+      deserializeUser: function(id, cb) { 
+        User.findOne({_id:id}, function (err, user) {
+          cb(err, user);
+        });
+      }
     },
     pluginConf);
   
@@ -68,17 +77,12 @@ module.exports = function AuthLocal(pluginConf, web, next) {
     var express = web.app;
 
 
-    passport.serializeUser(function(user, done2) {
-      done2(null, user._id);
+    passport.serializeUser(function(user, cb) {
+      cb(null, user._id);
 
     });
 
-    passport.deserializeUser(function(id, done2) {
-      var o_id = mongoose.Types.ObjectId(id);
-      User.findOne({_id:o_id}, function (err, user) {
-        done2(err, user);
-      });
-    });
+    passport.deserializeUser(pluginConf.deserializeUser);
 
     express.use(passport.initialize());
 
@@ -95,6 +99,7 @@ module.exports = function AuthLocal(pluginConf, web, next) {
     '/login': web.include(pluginPath + '/controllers/login.js'),
 
     '/register': web.include(pluginPath + '/controllers/register.js'),
+    '/user-profile': web.include(pluginPath + '/controllers/user-profile.js'),
     '/action/after-login': web.include(pluginPath + '/controllers/action/after-login.js')
   });
 

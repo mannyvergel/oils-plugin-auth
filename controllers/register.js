@@ -85,7 +85,7 @@ module.exports = {
             return;
           }
 
-          user.role = doc.content;
+          web.auth.conf.invitationContentHandler(user, doc);
         }
 
         if (!user.username) {
