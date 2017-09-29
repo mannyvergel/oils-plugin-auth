@@ -14,6 +14,7 @@
   <div class="medium-6 columns medium-centered">
   <h1>User Profile</h1>
     <form action="/user-profile" method="post"> 
+      <input type="hidden" name="_csrf" value="{{_csrf}}"/>
       <p>Username: {{_user.username}}</p>
       <input type="text" name="fullname" placeholder="Full Name" value="{{_user.fullname}}"/>
        

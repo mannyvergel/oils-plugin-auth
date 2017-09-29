@@ -27,16 +27,25 @@ var User = {
     nickname: String,
     fullname: {type: String, required: true},
     email: {type: String, required: true, validate: emailValidator, unique: true, lowercase: true, trim: true},
-    role: {type: String, default:'USER'}
+    role: {type: String, default:'USER'},
+
+    updateDt: {type: Date, default: Date.now},
+    updateBy: {type: String, default: 'SYSTEM'},
+    createDt: {type: Date, default: Date.now},
+    createBy: {type: String, default: 'SYSTEM'}
   },
 
   initSchema: function(UserSchema) {
 
     UserSchema.plugin(uniqueValidator, { message: 'Someone already registered the {PATH} {VALUE}.' });
 
-    UserSchema.pre('save', function(next) {
+    UserSchema.pre('save', function(next, req) {
       var user = this;
-     
+      
+      user.updateDt = new Date();
+      if (req && req.user) {
+        user.updateBy = req.user._id;
+      }
       // only hash the password if it has been modified (or is new)
       if (!user.isModified('password')) return next();
        

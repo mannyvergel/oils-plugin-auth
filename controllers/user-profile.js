@@ -32,7 +32,7 @@ module.exports = {
       }
 
       req.user.set(paramsCopy);
-      req.user.save(function(err) {
+      req.user.save(req, function(err) {
         if (err) {
           throw err;
         }
