@@ -1,7 +1,7 @@
 oils-plugin-auth
 ================
 
-Authentication plugin for oils version 1.x
+Authentication plugin for oils
 
 Installation:
 
