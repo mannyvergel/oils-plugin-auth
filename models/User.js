@@ -28,6 +28,8 @@ var User = {
     fullname: {type: String, required: true},
     email: {type: String, required: true, validate: emailValidator, unique: true, lowercase: true, trim: true},
     role: {type: String, default:'USER'},
+    avatar: {type: String},
+    addtlData: {},
 
     updateDt: {type: Date, default: Date.now},
     updateBy: {type: String, default: 'SYSTEM'},

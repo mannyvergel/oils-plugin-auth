@@ -16,9 +16,12 @@
     <form action="/user-profile" method="post"> 
       <input type="hidden" name="_csrf" value="{{_csrf}}"/>
       <p>Username: {{_user.username}}</p>
-      <input type="text" name="fullname" placeholder="Full Name" value="{{_user.fullname}}"/>
-       
-      <input type="text" name="email" placeholder="Email" value="{{_user.email}}"/> 
+
+      <label for="fullname">Full Name:</label>
+      <input type="text" id="fullname" name="fullname" placeholder="Full Name" value="{{_user.fullname}}"/>
+      
+      <label for="email">Email:</label>
+      <input type="text" id="email" name="email" placeholder="Email" value="{{_user.email}}"/> 
       
       <p>Fill in password fields if you want to change it</p>
       <input type="password" name="oldPassword" placeholder="Old Password" value=""/> 
