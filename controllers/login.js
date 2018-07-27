@@ -17,18 +17,22 @@ module.exports = {
       passport.authenticate('local', function(err, user, info) {
         if (err) { throw err; }
         if (!user) { 
-          req.flash('error', 'Invalid username or password.')
+          console.warn(req.body.username, "attempted wrong login.");
+          req.flash('error', 'Invalid username or password.');
           return res.redirect('/login?username=' + encodeURIComponent(req.body.username)); }
         req.logIn(user, function(err) {
           if (err) { throw err; }
 
-          //console.log('!!!', req.sessionOptions, req.session);
           if (req.body.remember == "Y") {
             req.sessionOptions.maxAge = 30 * 24 * 60 * 60 * 1000; // Cookie expires after 30 days
           } else {
-            //req.sessionOptions.maxAge = web.conf.cookieMaxAge || 86400000;
-            req.sessionOptions.expires = false;
+            //this seems to work for cookie-session
+            req.sessionOptions.maxAge = 0;
           }
+
+          req.session.save();
+
+          console.log(req.body.username, "logged in.");
 
           return res.redirect(redirectAfterLogin);
         });
