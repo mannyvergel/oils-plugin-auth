@@ -10,7 +10,7 @@ module.exports = {
     if (!req.user) {
       throw new Error("Not logged in.");
     }
-    var paramsCopy = Object.assign({}, req.body);
+    let paramsCopy = Object.assign({}, req.body);
 
     delete paramsCopy._id;
     if (web.stringUtils.isEmpty(paramsCopy.password) && web.stringUtils.isEmpty(paramsCopy.confirmPassword)) {
@@ -24,7 +24,7 @@ module.exports = {
       }
 
       if (errMsgs.length > 0) {
-        for (var i in errMsgs) {
+        for (let i in errMsgs) {
           req.flash('error', errMsgs[i]);
         }
         res.redirect('/user-profile');
@@ -45,7 +45,7 @@ module.exports = {
 }
 
 function validateParams(req, params, cb) {
-  var errMsgs = [];
+  let errMsgs = [];
 
   if (params.password || params.confirmPassword) {
     if (params.password != params.confirmPassword) {

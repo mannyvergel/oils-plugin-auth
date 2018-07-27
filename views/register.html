@@ -1,4 +1,4 @@
-'{% extends 'templates/main.html' %}
+{% extends 'templates/main.html' %}
 
 {% block title %}Register{% endblock %}
 
@@ -19,7 +19,7 @@
       <input type="text" name="invitationCode" placeholder="Invitation Code" value="" style="max-width: 400px;"/>
       {%endif%}
 
-      <input type="text" name="fullname" placeholder="Full Name" value="{{user.fullname}}"  style="max-width: 400px;"/>
+      <input type="text" name="fullname" placeholder="Given-name Surname" value="{{user.fullname}}"  style="max-width: 400px;"/>
        
       <input type="text" name="email" placeholder="Email" value="{{user.email}}"  style="max-width: 400px;"/> 
       

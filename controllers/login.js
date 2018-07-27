@@ -1,17 +1,19 @@
-var passport = require('passport');
+const passport = require('passport');
 
-var pluginConf = web.plugins['oils-plugin-auth'].conf;
+const pluginConf = web.plugins['oils-plugin-auth'].conf;
 
 module.exports = {
 
     get: function(req, res) {
-      var r = req.query.r || '';
-      var username = req.query.username || '';
-      res.renderFile(pluginConf.loginView, {r: r, username: username});
+      let r = req.query.r || '';
+      let username = req.query.username || '';
+      res.renderFile(pluginConf.loginView, {r: r, username: username, labels: pluginConf.labels});
     },
+
+
     post: function(req,res) {
 
-      var redirectAfterLogin = req.body.r || pluginConf.redirectAfterLogin;
+      let redirectAfterLogin = req.body.r || pluginConf.redirectAfterLogin;
       passport.authenticate('local', function(err, user, info) {
         if (err) { throw err; }
         if (!user) { 
@@ -19,19 +21,19 @@ module.exports = {
           return res.redirect('/login?username=' + encodeURIComponent(req.body.username)); }
         req.logIn(user, function(err) {
           if (err) { throw err; }
+
+          //console.log('!!!', req.sessionOptions, req.session);
+          if (req.body.remember == "Y") {
+            req.sessionOptions.maxAge = 30 * 24 * 60 * 60 * 1000; // Cookie expires after 30 days
+          } else {
+            //req.sessionOptions.maxAge = web.conf.cookieMaxAge || 86400000;
+            req.sessionOptions.expires = false;
+          }
+
           return res.redirect(redirectAfterLogin);
         });
       })(req, res);
 
-      
-      /*passport.authenticate('local', { 
-        //successRedirect: '/login-success' + param,
-        successRedirect: redirectAfterLogin,
-        failureRedirect: '/login?username=' + encodeURIComponent(req.body.username),
-        failureFlash: true 
-      })(req,res, function() {
-        
-      });*/
 
 
     }

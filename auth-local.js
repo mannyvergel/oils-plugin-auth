@@ -1,15 +1,15 @@
-var passport = require('passport'), 
+const passport = require('passport'), 
   LocalStrategy = require('passport-local').Strategy;
 
 
 
 module.exports = function AuthLocal(pluginConf, web, next) {
-  var mongoose = web.lib.mongoose;
-  var self = this;
+  const mongoose = web.require('mongoose');
+  let self = this;
 
   web.auth = self;
 
-  var pluginPath = pluginConf.pluginPath;
+  let pluginPath = pluginConf.pluginPath;
 
   pluginConf = web.utils.extend({
       loginView: pluginPath + "/views/login.html",
@@ -20,6 +20,13 @@ module.exports = function AuthLocal(pluginConf, web, next) {
       registrationEnabled: true,
       needsInvitation: false,
       humanTest: true,
+      saltRounds: 12,
+
+      labels: {
+        username: "Email",
+        password: "Password",
+      },
+
       invitationContentHandler: function(user, doc) {
         user.role = doc.content;
       },
@@ -33,22 +40,35 @@ module.exports = function AuthLocal(pluginConf, web, next) {
   
   web.auth.conf = pluginConf;
 
+
+  web.lib = web.lib || {};
+
+  Object.defineProperty(web.lib, 'passport', {
+    get: function() {
+      let stack = new Error().stack;
+      console.warn("Use web.auth.require('passport') instead of calling web.lib..", stack);
+      return require('passport');
+    }
+  });
+
+
+  //option to use auth's brcrypt and other libs
+  web.auth.require = function(libStr) {
+    return require(libStr);
+  }
+
   web.on('beforeRender', function(view, options, callback, req, res) {
     options = options || {};
     options._user = req.user;
   })  
 
-  var User = web.includeModel(pluginConf.userModel);
+  let User = web.includeModel(pluginConf.userModel);
   
   web.auth.UserModel = User;
   web.auth.loginUtils = require('./utils/loginUtils');
 
-
-  web.lib = web.lib || {};
-  web.lib.passport = passport;
   passport.use(new LocalStrategy(
     function(username, password, done) {
-
 
       User.findOne({ username: username }, function(err, user) {
 
@@ -64,33 +84,34 @@ module.exports = function AuthLocal(pluginConf, web, next) {
               return done(null, user);
               
             } else {
-              return done(null, false, { message: 'Incorrect password or password.' });
+              return done(null, false, { message: 'Incorrect username or password.' });
             }
         });
 
         
       });
-    }
-    ));
+
+    })
+  );
 
 
-    var express = web.app;
+  let express = web.app;
 
 
-    passport.serializeUser(function(user, cb) {
-      cb(null, user._id);
+  passport.serializeUser(function(user, cb) {
+    cb(null, user._id);
 
-    });
+  });
 
-    passport.deserializeUser(pluginConf.deserializeUser);
+  passport.deserializeUser(pluginConf.deserializeUser);
 
-    express.use(passport.initialize());
+  express.use(passport.initialize());
 
-    express.use(passport.session());
+  express.use(passport.session());
 
 
 
-  web.applyRoutes({
+  web.addRoutes({
     '/logout': function(req, res){
       req.logout();
       res.redirect('/');

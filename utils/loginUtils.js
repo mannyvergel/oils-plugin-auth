@@ -6,7 +6,7 @@ exports.handleLogin = function(req, res, next) {
 }
 
 exports.handleRole = function(role, req, res, next) {
-  var isLoggedIn = req.isAuthenticated();
+  let isLoggedIn = req.isAuthenticated();
 
   if (!(role instanceof Array)) {
     role = [role];
@@ -14,7 +14,7 @@ exports.handleRole = function(role, req, res, next) {
 
   if (isLoggedIn && hasRole(role, req.user.role)) { return next(); }
 
-  var message;
+  let message;
 
   if (isLoggedIn) {
     message = 'You have no access to this page.';
@@ -27,7 +27,7 @@ exports.handleRole = function(role, req, res, next) {
 }
 
 function hasRole(roles, role) {
-  for (var i in roles) {
+  for (let i in roles) {
     if (roles[i] == role) {
       return true;
     }

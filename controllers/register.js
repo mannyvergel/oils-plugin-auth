@@ -1,7 +1,7 @@
 
-var passport = require('passport');
+const passport = require('passport');
 
-var questions = [
+const questions = [
 {q: 'Are you from mars?', a: 'no'},
 {q: "What is 5 + 3?", a: '8'},
 {q: "What is 7 x 3?", a: '21'},
@@ -16,41 +16,38 @@ function getRandomInt(min, max) {
   return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
-var pluginConf = web.plugins['oils-plugin-auth'].conf;
+const pluginConf = web.plugins['oils-plugin-auth'].conf;
+const User = web.includeModel(pluginConf.userModel);
 
-
-var User = web.includeModel(pluginConf.userModel);
 module.exports = {
 
     get: function(req, res) {
 
-      var pluginConf = web.plugins['oils-plugin-auth'].conf;
       if (!pluginConf.registrationEnabled) {
         throw new Error("Registration is not enabled.");
       }
-      var qIndex = getRandomInt(0, questions.length-1);
+      let qIndex = getRandomInt(0, questions.length-1);
       res.renderFile(pluginConf.registerView, {questions: questions, qIndex: qIndex, 
         needsInvitation: pluginConf.needsInvitation, humanTest: pluginConf.humanTest});
     },
     post: function(req,res) {
 
-      var pluginConf = web.plugins['oils-plugin-auth'].conf;
       if (!pluginConf.registrationEnabled) {
         throw new Error("Registration is not enabled.");
       }
 
-      var user = new User();
-      for (var i in req.body) {
+      let user = new User();
+      for (let i in req.body) {
         user[i] = req.body[i];
       }
 
       delete user._id;
 
-      var qIndex = parseInt(req.body.qIndex);
+      let qIndex = parseInt(req.body.qIndex);
 
-      var answer = req.body.a || '';
+      let answer = req.body.a || '';
 
-      var errorMsgs = [];
+      let errorMsgs = [];
 
       if (req.body.password != req.body.confirmPassword) {
         errorMsgs.push('Passwords do not match.');
@@ -64,7 +61,7 @@ module.exports = {
         errorMsgs.push('Invitation code is required');
       }
       if (errorMsgs.length > 0) {
-        for (var i in errorMsgs) {
+        for (let i in errorMsgs) {
           req.flash('error', errorMsgs[i]);
         }
         
@@ -73,8 +70,8 @@ module.exports = {
       } 
 
       
-      var dmsUtils = web.cms.utils;
-      var invitationPath = '/invites/' + req.body.invitationCode;
+      let dmsUtils = web.cms.utils;
+      let invitationPath = '/invites/' + req.body.invitationCode;
       dmsUtils.retrieveDoc(invitationPath, function(err, doc) {
         if (err) throw err;
 
@@ -100,7 +97,7 @@ module.exports = {
 
           if (err) {
             console.log('Error saving: ' + err);
-            for (var i in err.errors) {
+            for (let i in err.errors) {
               req.flash('error', err.errors[i].message);
             }
             res.renderFile(pluginConf.registerView, {needsInvitation: pluginConf.needsInvitation, user: user, qIndex: qIndex, questions: questions, answer: answer});
@@ -113,7 +110,7 @@ module.exports = {
               return res.redirect(pluginConf.redirectAfterLogin);
             });
 
-            // var myNext = function() {
+            // let myNext = function() {
             //   req.flash('info', 'Successfully registered and authenticated.');
             //   res.redirect(pluginConf.redirectAfterLogin);
             // }
