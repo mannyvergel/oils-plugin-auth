@@ -23,6 +23,12 @@ module.exports = {
 
     get: function(req, res) {
 
+      if (req.user) {
+        console.warn("Login user", req.user.username, "attempted to access /register while logged in.");
+        res.redirect(pluginConf.redirectAfterLogin);
+        return;
+      }
+
       if (!pluginConf.registrationEnabled) {
         throw new Error("Registration is not enabled.");
       }
@@ -30,18 +36,20 @@ module.exports = {
       res.renderFile(pluginConf.registerView, {questions: questions, qIndex: qIndex, 
         needsInvitation: pluginConf.needsInvitation, humanTest: pluginConf.humanTest});
     },
-    post: function(req,res) {
+    post: async function(req,res) {
 
       if (!pluginConf.registrationEnabled) {
         throw new Error("Registration is not enabled.");
       }
 
       let user = new User();
-      for (let i in req.body) {
-        user[i] = req.body[i];
-      }
+      
+      let params = Object.assign({}, req.body);
 
-      delete user._id;
+      params._id = undefined;
+      params.role = "USER";
+
+      user.set(params);
 
       let qIndex = parseInt(req.body.qIndex);
 
@@ -70,54 +78,57 @@ module.exports = {
       } 
 
       
-      let dmsUtils = web.cms.utils;
-      let invitationPath = '/invites/' + req.body.invitationCode;
-      dmsUtils.retrieveDoc(invitationPath, function(err, doc) {
-        if (err) throw err;
+      if (pluginConf.needsInvitation) {
+        //TODO: probably better to separate this plugin for invitation
+        //and make a callEvent here
+        let dmsUtils = web.cms.utils;
+        let invitationPath = '/invites/' + req.body.invitationCode;
+        let doc = await dmsUtils.retrieveDoc(invitationPath)
+        if (!doc) {
+          req.flash('error', 'Invalid invitation code.');
+          res.redirect('/register');
+          return;
+        }
 
-        if (pluginConf.needsInvitation) {
-          if (!doc) {
-            req.flash('error', 'Invalid invitation code.');
-            res.redirect('/register');
-            return;
+        await web.auth.conf.invitationContentHandler(user, doc);
+      }
+
+      if (!user.username) {
+        user.username = user.email;
+      }
+
+      if (!user.nickname) {
+        user.nickname = user.fullname.split(' ')[0];
+      }
+
+      user.save(function(err) {
+
+        if (err) {
+          console.log('Error saving: ' + err);
+          for (let i in err.errors) {
+            req.flash('error', err.errors[i].message);
           }
+          res.renderFile(pluginConf.registerView, {needsInvitation: pluginConf.needsInvitation, user: user, qIndex: qIndex, questions: questions, answer: answer});
+        } else {
+          req.login(user, function(err) {
+            if (err) { throw err; }
 
-          web.auth.conf.invitationContentHandler(user, doc);
-        }
-
-        if (!user.username) {
-          user.username = user.email;
-        }
-
-        if (!user.nickname) {
-          user.nickname = user.fullname.split(' ')[0];
-        }
-
-        user.save(function(err) {
-
-          if (err) {
-            console.log('Error saving: ' + err);
-            for (let i in err.errors) {
-              req.flash('error', err.errors[i].message);
-            }
-            res.renderFile(pluginConf.registerView, {needsInvitation: pluginConf.needsInvitation, user: user, qIndex: qIndex, questions: questions, answer: answer});
-          } else {
-            req.login(user, function(err) {
-              if (err) { throw err; }
-
-              req.flash('info', 'Successfully registered and authenticated.');
+            req.flash('info', 'Successfully registered and authenticated.');
+            if (pluginConf.needsInvitation) {
+              let dmsUtils = web.cms.utils;
+              let invitationPath = '/invites/' + req.body.invitationCode;
               dmsUtils.deletePath(invitationPath);
-              return res.redirect(pluginConf.redirectAfterLogin);
-            });
+            }
+            return res.redirect(pluginConf.redirectAfterLogin);
+          });
 
-            // let myNext = function() {
-            //   req.flash('info', 'Successfully registered and authenticated.');
-            //   res.redirect(pluginConf.redirectAfterLogin);
-            // }
-            // passport.authenticate('local')(req, res, myNext);
-            // dmsUtils.deletePath(invitationPath);
-          }
-        })
+          // let myNext = function() {
+          //   req.flash('info', 'Successfully registered and authenticated.');
+          //   res.redirect(pluginConf.redirectAfterLogin);
+          // }
+          // passport.authenticate('local')(req, res, myNext);
+          // dmsUtils.deletePath(invitationPath);
+        }
       })
 
       

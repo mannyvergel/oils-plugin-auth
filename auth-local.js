@@ -29,7 +29,7 @@ module.exports = async function AuthLocal(pluginConf, web, next) {
       checkIfNeededAdminRegistration: async function() {
 
         let User = web.auth.UserModel;
-        let users = await User.find({role:'ADMIN'}).limit(1).lean().exec();
+        let users = await User.find({username:pluginConf.defaultAdminUsername}).limit(1).lean().exec();
        
         return (!users || users.length == 0);
       },
@@ -40,7 +40,7 @@ module.exports = async function AuthLocal(pluginConf, web, next) {
       },
 
       invitationContentHandler: function(user, doc) {
-        user.role = doc.content;
+        user.role = doc.content || 'USER';
       },
       deserializeUser: function(id, cb) { 
         User.findOne({_id:id}, function (err, user) {
@@ -149,6 +149,24 @@ module.exports = async function AuthLocal(pluginConf, web, next) {
   }
 
   web.addRoutes(authRoutes);
+
+  if (pluginConf.needsInvitation) {
+    
+    web.on('initServer', function() {
+      web.syspars.get('AUTH_RUN_ONCE', async function(err, syspar) {
+        if (!syspar) {
+          let dmsUtils = web.cms.utils;
+          let randomStr = await web.stringUtils.genSecureRandomString();
+          dmsUtils.createFileIfNotExist('/invites/sample-' + randomStr, "USER", function(err, doc, alreadyExists) {
+            console.log("Created sample invitation sample-" + randomStr);
+          });
+
+          web.syspars.set('AUTH_RUN_ONCE', 'Y');
+        }
+      });
+    })
+    
+  }
 
   next();
 
