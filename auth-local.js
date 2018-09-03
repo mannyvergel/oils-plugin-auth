@@ -3,7 +3,7 @@ const passport = require('passport'),
 
 
 
-module.exports = function AuthLocal(pluginConf, web, next) {
+module.exports = async function AuthLocal(pluginConf, web, next) {
   const mongoose = web.require('mongoose');
   let self = this;
 
@@ -14,13 +14,25 @@ module.exports = function AuthLocal(pluginConf, web, next) {
   pluginConf = web.utils.extend({
       loginView: pluginPath + "/views/login.html",
       registerView: pluginPath + "/views/register.html",
+      registerAdminView: pluginPath + "/views/register-admin.html",
       userProfileView: pluginPath + "/views/user-profile.html",
       userModel: pluginPath + "/models/User.js",
       redirectAfterLogin: "/action/after-login",
+
+      defaultAdminUsername:'admin',
+
       registrationEnabled: true,
       needsInvitation: false,
       humanTest: true,
       saltRounds: 12,
+
+      checkIfNeededAdminRegistration: async function() {
+
+        let User = web.auth.UserModel;
+        let users = await User.find({role:'ADMIN'}).limit(1).lean().exec();
+       
+        return (!users || users.length == 0);
+      },
 
       labels: {
         username: "Email",
@@ -109,9 +121,7 @@ module.exports = function AuthLocal(pluginConf, web, next) {
 
   express.use(passport.session());
 
-
-
-  web.addRoutes({
+  let authRoutes = {
     '/logout': function(req, res){
       req.logout();
       res.redirect('/');
@@ -122,7 +132,23 @@ module.exports = function AuthLocal(pluginConf, web, next) {
     '/register': web.include(pluginPath + '/controllers/register.js'),
     '/user-profile': web.include(pluginPath + '/controllers/user-profile.js'),
     '/action/after-login': web.include(pluginPath + '/controllers/action/after-login.js')
-  });
+  };
+
+  web.auth.shouldGenAdmin = await pluginConf.checkIfNeededAdminRegistration();
+  
+  if (web.auth.shouldGenAdmin) {
+    authRoutes['/register-admin'] = web.include(pluginPath + '/controllers/register-admin.js');
+
+    express.use(function(req, res, next) {
+      if (web.auth.shouldGenAdmin && req.url == "/") {
+        res.redirect('/register-admin');
+      } else {
+        next();
+      }
+    });
+  }
+
+  web.addRoutes(authRoutes);
 
   next();
 

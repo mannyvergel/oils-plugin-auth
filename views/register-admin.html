@@ -1,6 +1,6 @@
 {% extends 'templates/main.html' %}
 
-{% block title %}Register{% endblock %}
+{% block title %}Register Admin{% endblock %}
 
 {% block head %}
 {% endblock %}
@@ -12,15 +12,15 @@
 <div class="row justify-content-center">
   
   <div class="medium-6 columns medium-centered col-lg-6 col-centered">
-  <h1>Register</h1>
-    <form action="/register" method="post" class="form"> 
+  <h1>Register Admin</h1>
+    <div class="alert alert-warning">Looks like you haven't created an admin user yet. Please create one.</div>
+    <form action="/register-admin" method="post" class="form"> 
       <input type="hidden" name="_csrf" value="{{_csrf}}"/>
-      {%if needsInvitation%}
+      
       <div class="form-group">
-        {#<label for="invitationCode">Invitation Code</label>#}
-        <input type="text" class="form-control" name="invitationCode" id="invitationCode" placeholder="Invitation Code" value="" style="max-width: 400px;"/>
+        <label for="invitationCode">Username: {{defaultAdminUsername}}</label>
       </div>
-      {%endif%}
+     
 
       <div class="form-group">
         {#<label for="fullname">Full Name</label>#}
@@ -41,18 +41,9 @@
       <input type="password" class="form-control" name="confirmPassword" placeholder="Confirm Password" value=""  style="max-width: 400px;"/> 
       </div>
 
-      
-      {%if humanTest%}
-      <div class="form-group">
-      <label style="margin-bottom: 0;">{{questions[qIndex].q}} (to verify you're human)
-      <input type="text" class="form-control" name="a" placeholder="Your answer" value="{{answer}}"  style="max-width: 400px;"/> 
-      </label>
-      </div>
-      
-      <input type="hidden" name="qIndex" value="{{qIndex}}"/> 
-      {%endif%}
+    
 
-      <button type="submit" class="small button btn btn-primary">Register</button>
+      <button type="submit" class="small button btn btn-primary">Register Admin</button>
       
     </form>
 

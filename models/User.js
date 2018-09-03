@@ -23,12 +23,16 @@ let User = {
   schema: {
     username: {type: String, index: true, unique: true, required: true, lowercase: true, trim: true},
     password: {type: String, required: true},
+    birthday: {type: Date},
     nickname: String,
     fullname: {type: String, required: true},
-    email: {type: String, required: true, validate: emailValidator, unique: true, lowercase: true, trim: true},
+    email: {type: String, required: true, validate: emailValidator, unique: true, index: true, lowercase: true, trim: true},
     role: {type: String, default:'USER'},
     avatar: {type: String},
     addtlData: {},
+
+    //verified: {type: String, default: 'N'},
+    //verifyKey: {type: String},
 
     updateDt: {type: Date, default: Date.now},
     updateBy: {type: String, default: 'SYSTEM'},
