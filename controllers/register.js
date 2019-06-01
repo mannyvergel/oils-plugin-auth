@@ -65,6 +65,10 @@ module.exports = {
         errorMsgs.push('Invalid answer to the question.');
       }
 
+      if (req.body.password.length < pluginConf.passreqts.length) {
+        errorMsgs.push('Password should have a minimum of ' + pluginConf.passreqts.length + ' characters.');
+      }
+
       if (pluginConf.needsInvitation && !req.body.invitationCode) {
         errorMsgs.push('Invitation code is required');
       }
@@ -93,6 +97,8 @@ module.exports = {
         await web.auth.conf.invitationContentHandler(user, doc);
       }
 
+      // trim and lowercase done in the model
+
       if (!user.username) {
         user.username = user.email;
       }
@@ -110,6 +116,8 @@ module.exports = {
           }
           res.renderFile(pluginConf.registerView, {needsInvitation: pluginConf.needsInvitation, user: user, qIndex: qIndex, questions: questions, answer: answer});
         } else {
+          web.callEvent('auth.registerSuccess', [user]);
+
           req.login(user, function(err) {
             if (err) { throw err; }
 

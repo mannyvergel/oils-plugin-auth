@@ -26,6 +26,10 @@ module.exports = async function AuthLocal(pluginConf, web, next) {
       humanTest: true,
       saltRounds: 12,
 
+      passreqts: {
+        length: 6
+      },
+
       checkIfNeededAdminRegistration: async function() {
 
         let User = web.auth.UserModel;

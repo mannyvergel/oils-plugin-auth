@@ -31,13 +31,24 @@ module.exports = {
         return;
       }
 
+      var prevEmail = req.user.email;
+
+      // update the username as well if it's the same as previous email
+      if (req.user.username == req.user.email) {
+        paramsCopy.username = paramsCopy.email;
+      }
+
       req.user.set(paramsCopy);
       req.user.save(req, function(err) {
         if (err) {
           throw err;
         }
 
-        req.flash('info', "Profile saved.");
+        if (prevEmail != req.user.email) {
+          web.callEvent('auth.emailChange', [req.user, prevEmail]);  
+        }
+
+        req.flash('info', "Profile saved 2.");
         res.redirect('/user-profile');
       })
     });
@@ -50,6 +61,10 @@ function validateParams(req, params, cb) {
   if (params.password || params.confirmPassword) {
     if (params.password != params.confirmPassword) {
       errMsgs.push("Passwords do not match.");
+    }
+
+    if (params.password.length < web.auth.conf.passreqts.length) {
+      errMsgs.push('Password should have a minimum of ' + web.auth.conf.passreqts.length + ' characters.');
     }
 
     req.user.comparePassword(params.oldPassword, function(err, isMatch) {
