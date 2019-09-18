@@ -1,3 +1,5 @@
+'use strict';
+
 const validator = require('validator');
 const bcrypt = require('bcrypt');
 
@@ -5,8 +7,6 @@ const emailValidator = [function(val) {
   //console.log('validate Email : %s = %s', val, validator.isEmail(val));
   return validator.isEmail(val);
 }, 'Invalid email.'];
-
-const uniqueValidator = require('mongoose-unique-validator');
 
 const mongoose = web.require('mongoose');
 const Schema = mongoose.Schema,
@@ -41,8 +41,6 @@ let User = {
   },
 
   initSchema: function(UserSchema) {
-
-    UserSchema.plugin(uniqueValidator, { message: 'Someone already registered the {PATH} {VALUE}.' });
 
     UserSchema.pre('save', function(next, req) {
       let user = this;

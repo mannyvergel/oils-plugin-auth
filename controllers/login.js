@@ -1,3 +1,5 @@
+'use strict';
+
 const passport = require('passport');
 
 const pluginConf = web.plugins['oils-plugin-auth'].conf;

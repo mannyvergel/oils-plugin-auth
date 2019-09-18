@@ -1,3 +1,5 @@
+'use strict';
+
 module.exports = {
   get: function(req, res) {
     if (!req.user) {
@@ -39,7 +41,7 @@ module.exports = {
       }
 
       req.user.set(paramsCopy);
-      req.user.save(req, function(err) {
+      req.user.save(function(err) {
         if (err) {
           throw err;
         }
@@ -48,7 +50,7 @@ module.exports = {
           web.callEvent('auth.emailChange', [req.user, prevEmail]);  
         }
 
-        req.flash('info', "Profile saved 2.");
+        req.flash('info', "Profile saved.");
         res.redirect('/user-profile');
       })
     });

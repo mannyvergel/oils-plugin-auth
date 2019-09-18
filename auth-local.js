@@ -1,6 +1,7 @@
+'use strict';
+
 const passport = require('passport'), 
   LocalStrategy = require('passport-local').Strategy;
-
 
 
 module.exports = async function AuthLocal(pluginConf, web, next) {

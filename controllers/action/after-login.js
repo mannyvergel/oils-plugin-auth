@@ -1,3 +1,5 @@
+'use strict';
+
 module.exports = {
 	all: function(req, res) {
 		if (req.user.role == 'ADMIN') {
