@@ -14,7 +14,9 @@ module.exports = async function AuthLocal(pluginConf, web, next) {
 
   pluginConf = web.utils.extend({
       loginView: pluginPath + "/views/login.html",
+      loginController: pluginPath + '/controllers/login.js',
       registerView: pluginPath + "/views/register.html",
+      registerController: pluginPath + '/controllers/register.js',
       registerAdminView: pluginPath + "/views/register-admin.html",
       userProfileView: pluginPath + "/views/user-profile.html",
       userModel: pluginPath + "/models/User.js",
@@ -125,16 +127,16 @@ module.exports = async function AuthLocal(pluginConf, web, next) {
   express.use(passport.initialize());
 
   express.use(passport.session());
-
+  console.log('!!!', pluginConf.registerController);
   let authRoutes = {
     '/logout': function(req, res){
       req.logout();
       res.redirect('/');
     },
 
-    '/login': web.include(pluginPath + '/controllers/login.js'),
+    '/login': web.include(pluginConf.loginController),
 
-    '/register': web.include(pluginPath + '/controllers/register.js'),
+    '/register': web.include(pluginConf.registerController),
     '/user-profile': web.include(pluginPath + '/controllers/user-profile.js'),
     '/action/after-login': web.include(pluginPath + '/controllers/action/after-login.js')
   };
