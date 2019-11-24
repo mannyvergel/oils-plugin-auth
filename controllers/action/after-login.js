@@ -2,9 +2,10 @@
 
 module.exports = {
 	all: function(req, res) {
-		if (req.user.role == 'ADMIN') {
+    const userRole = req.user && req.user.role;
+		if (userRole === 'ADMIN') {
 			res.redirect('/admin');
-		} else if (req.user.role == 'USER') {
+		} else if (userRole === 'USER') {
 			res.redirect('/');
 		} else {
 			res.redirect('/');
