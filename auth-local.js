@@ -36,7 +36,7 @@ module.exports = async function AuthLocal(pluginConf, web, next) {
       checkIfNeededAdminRegistration: async function() {
 
         let User = web.auth.UserModel;
-        let users = await User.find({username:pluginConf.defaultAdminUsername}).limit(1).lean().exec();
+        let users = await User.find({}).limit(1).lean().exec();
        
         return (!users || users.length == 0);
       },
@@ -127,7 +127,7 @@ module.exports = async function AuthLocal(pluginConf, web, next) {
   express.use(passport.initialize());
 
   express.use(passport.session());
-  console.log('!!!', pluginConf.registerController);
+
   let authRoutes = {
     '/logout': function(req, res){
       req.logout();
