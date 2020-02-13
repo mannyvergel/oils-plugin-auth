@@ -28,6 +28,28 @@ exports.handleRole = function(role, req, res, next) {
   res.redirect('/login?r=' + encodeURIComponent(req.url));
 }
 
+exports.handleRoleMidddleware = function(role, redirUrl) {
+  return function(req, res, next) {
+    let isLoggedIn = req.isAuthenticated();
+
+    if (!(role instanceof Array)) {
+      role = [role];
+    }
+
+    if (isLoggedIn && hasRole(role, req.user.role)) { 
+      return next();
+    }
+
+    if (isLoggedIn) {
+      console.warn("Unauthorized access", req._user.username);
+      req.flash('error', "You don't have access to the page.");
+    }
+
+    redirUrl = redirUrl || '/login';
+    res.redirect(redirUrl);
+  } 
+}
+
 function hasRole(roles, role) {
   for (let i in roles) {
     if (roles[i] == role) {

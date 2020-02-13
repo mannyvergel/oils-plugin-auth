@@ -31,6 +31,10 @@ module.exports = {
       
       let params = Object.assign({}, req.body);
 
+      if (params.secret !== web.conf.secretPassphrase) {
+        throw new Error("Invalid request for creating an admin.");
+      }
+
       params._id = undefined;
       params.username = pluginConf.defaultAdminUsername;
       params.role = 'ADMIN';
