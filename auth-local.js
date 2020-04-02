@@ -4,7 +4,7 @@ const passport = require('passport'),
   LocalStrategy = require('passport-local').Strategy;
 
 
-module.exports = async function AuthLocal(pluginConf, web, next) {
+module.exports = async function AuthLocal(pluginConf, web) {
   const mongoose = web.require('mongoose');
   let self = this;
 
@@ -77,8 +77,11 @@ module.exports = async function AuthLocal(pluginConf, web, next) {
   }
 
   web.on('beforeRender', function(view, options, callback, req, res) {
-    options = options || {};
-    options._user = req.user;
+    if (req.user) {
+      let userObj = req.user.toObject({getters: true});
+      userObj.password = null;
+      options._user = userObj;
+    }
   })  
 
   let User = web.includeModel(pluginConf.userModel);
@@ -159,23 +162,19 @@ module.exports = async function AuthLocal(pluginConf, web, next) {
 
   if (pluginConf.needsInvitation) {
     
-    web.on('initServer', function() {
-      web.syspars.get('AUTH_RUN_ONCE', async function(err, syspar) {
-        if (!syspar) {
-          let dmsUtils = web.cms.utils;
-          let randomStr = await web.stringUtils.genSecureRandomString();
-          dmsUtils.createFileIfNotExist('/invites/sample-' + randomStr, "USER", function(err, doc, alreadyExists) {
-            console.log("Created sample invitation sample-" + randomStr);
-          });
+    web.on('initServer', async function() {
+      web.runOnce('AUTH_RUN_ONCE', async function() {
 
-          web.syspars.set('AUTH_RUN_ONCE', 'Y');
-        }
+        let dmsUtils = web.cms.utils;
+        let randomStr = await web.stringUtils.genSecureRandomString();
+        await dmsUtils.createFileIfNotExist('/invites/sample-' + randomStr, "USER");
+
+        console.log("Created sample invitation sample-" + randomStr);
+
       });
     })
     
   }
-
-  next();
 
 
 }

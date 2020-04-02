@@ -24,7 +24,7 @@ let User = {
     username: {type: String, index: true, unique: true, required: true, lowercase: true, trim: true},
     password: {type: String, required: true},
     birthday: {type: Date},
-    nickname: String,
+    nickname: {type: String},
     fullname: {type: String, required: true},
     email: {type: String, required: true, validate: emailValidator, unique: true, index: true, lowercase: true, trim: true},
     role: {type: String, default:'USER'},
