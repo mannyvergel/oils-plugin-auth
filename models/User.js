@@ -112,7 +112,7 @@ let User = {
       if (updatedObj.failCount >= pluginConf.failCountLock && updatedObj.status !== "L") {
         console.warn("Locking user:", updatedObj.email, updatedObj._id)
         updatedObj.status = "L";
-        await updateRes.save();
+        await updatedObj.save();
       }
     }
 
