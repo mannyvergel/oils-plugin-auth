@@ -24,6 +24,8 @@ module.exports = async function AuthLocal(pluginConf, web) {
 
       defaultAdminUsername:'admin',
 
+      failCountLock: 20,
+
       registrationEnabled: true,
       needsInvitation: false,
       humanTest: true,
@@ -99,13 +101,19 @@ module.exports = async function AuthLocal(pluginConf, web) {
           return done(null, false, { message: 'Incorrect username or password.' });
         }
 
+        if (user.status === "L") {
+          return done(null, false, { message: 'Your account has been locked. Please contact the system administrator for assistance.' });
+        }
+
         user.comparePassword(password, function(err, isMatch) {
             if (err) throw err;
 
             if (isMatch) {
+              user.resetFailCount();
               return done(null, user);
               
             } else {
+              user.incrementFailCount();
               return done(null, false, { message: 'Incorrect username or password.' });
             }
         });

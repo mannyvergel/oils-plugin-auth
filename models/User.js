@@ -31,6 +31,11 @@ let User = {
     avatar: {type: String},
     addtlData: {},
 
+    failCount: {type: Number, default: 0, required: true},
+    lastFailDt: {type: Date},
+
+    status: {type: String, default: 'A'}, // L - Locked
+
     //verified: {type: String, default: 'N'},
     //verifyKey: {type: String},
 
@@ -41,6 +46,8 @@ let User = {
   },
 
   initSchema: function(UserSchema) {
+    let pluginConf = web.plugins['oils-plugin-auth'].conf;
+
 
     UserSchema.pre('save', function(next, req) {
       let user = this;
@@ -49,10 +56,23 @@ let User = {
       if (req && req.user) {
         user.updateBy = req.user._id;
       }
+
+      if (!user.status) {
+        user.status = "A";
+      }
+
+      if (user.isModified('status') && user.status === "A") {
+        user.failCount = 0;
+      }
+
       // only hash the password if it has been modified (or is new)
       if (!user.isModified('password')) return next();
-      
-      let pluginConf = web.plugins['oils-plugin-auth'].conf;
+
+      // reset fail count when password is modified (e.g. reset password)
+      user.failCount = 0;
+      if (user.status !== "A") {
+        user.status = "A";
+      }
 
       if (pluginConf.saltRounds < 10) {
         console.warn("Hashing salt rounds (auth.saltRounds) is too low. Consider increasing to at least 10.");
@@ -74,6 +94,27 @@ let User = {
      
      
     });
+
+    UserSchema.methods.resetFailCount = async function() {
+      const UserDbm = web.models('User');
+      const userId = this._id;
+      await UserDbm.updateOne({_id: userId}, {$set: {failCount: 0}}).exec();
+    }
+
+    UserSchema.methods.incrementFailCount = async function() {
+      const dbObj = web.models('User');
+      let updatedObj = await dbObj.findOneAndUpdate({_id: this._id}, 
+        {$inc: {failCount: 1}, $set: {lastFailDt: new Date()}},
+        {new: true}).exec();
+
+      console.warn("Failed login:", updatedObj.email, updatedObj.failCount, pluginConf.failCountLock);
+
+      if (updatedObj.failCount >= pluginConf.failCountLock && updatedObj.status !== "L") {
+        console.warn("Locking user:", updatedObj.email, updatedObj._id)
+        updatedObj.status = "L";
+        await updateRes.save();
+      }
+    }
 
     UserSchema.methods.comparePassword = function(candidatePassword, cb) {
       bcrypt.compare(candidatePassword, this.password, function(err, isMatch) {
