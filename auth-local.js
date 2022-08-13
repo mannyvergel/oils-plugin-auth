@@ -141,7 +141,11 @@ module.exports = async function AuthLocal(pluginConf, web) {
 
   let authRoutes = {
     '/logout': function(req, res){
-      req.logout();
+      req.logout(function(err) {
+        if (err) {
+          console.error("Logout error:", err);
+        }
+      });
       res.redirect('/');
     },
 

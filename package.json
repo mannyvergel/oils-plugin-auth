@@ -1,6 +1,6 @@
 {
   "name": "oils-plugin-auth",
-  "version": "8.0.1",
+  "version": "9.0.0",
   "description": "Oils js authentication plugin using passport js.",
   "keywords": [
     "oils",
@@ -26,9 +26,9 @@
   "dependencies": {
     "bcrypt": "^5.0.1",
     "mongoose-unique-validator": "2.0.3",
-    "passport": "^0.4.1",
+    "passport": "^0.5.3",
     "passport-local": "1.0.x",
-    "validator": "^13.0.0"
+    "validator": "^13.7.0"
   },
   "license": "MIT",
   "devDependencies": {},
