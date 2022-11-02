@@ -19,7 +19,7 @@ module.exports = {
       let {user, info} = await authLocal(req, res); 
 
       if (!user) { 
-        console.warn(req.body.username, "attempted wrong login.");
+        console.warn(req.body.username, "attempted wrong login. :::", web.utils.getClientIp(req), "::", req.headers['user-agent']);
         req.flash('error', info.message || 'Invalid username or password.');
         return res.redirect('/login?username=' + encodeURIComponent(req.body.username));
       }
