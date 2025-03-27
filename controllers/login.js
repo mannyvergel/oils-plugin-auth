@@ -27,11 +27,11 @@ module.exports = {
       await reqLoginPromise(req, user);
 
       if (req.body.remember == "Y") {
-        req.sessionOptions.maxAge = 30 * 24 * 60 * 60 * 1000; // Cookie expires after 30 days
+        req.session.cookie.maxAge = 30 * 24 * 60 * 60 * 1000; // Cookie expires after 30 days
       } else {
         // timeout after browser closes
         // https://stackoverflow.com/questions/6992022/how-to-make-the-session-expire-after-a-browser-close-in-node-js-with-express
-        req.sessionOptions.maxAge = false;
+        req.session.cookie.expires = false;
       }
 
       req.session.save();
