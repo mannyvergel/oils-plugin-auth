@@ -78,6 +78,22 @@ module.exports = async function AuthLocal(pluginConf, web) {
     return require(libStr);
   }
 
+  let User = web.includeModel(pluginConf.userModel);
+  
+  web.auth.UserModel = User;
+  web.auth.loginUtils = require('./utils/loginUtils');
+
+  if (web.conf.bypassSession) {
+    console.warn("Not initializing oils-plugin-auth as session is bypassed.");
+
+    web.app.use(function(req, res, next) {
+      req.isAuthenticated = function() {return false;};
+
+      next();
+    })
+    return;
+  }
+
   web.on('beforeRender', function(view, options, callback, req, res) {
     if (req.user) {
       let userObj = req.user.toObject({getters: true});
@@ -85,11 +101,6 @@ module.exports = async function AuthLocal(pluginConf, web) {
       options._user = userObj;
     }
   })  
-
-  let User = web.includeModel(pluginConf.userModel);
-  
-  web.auth.UserModel = User;
-  web.auth.loginUtils = require('./utils/loginUtils');
 
   passport.use(new LocalStrategy(
     function(username, password, done) {
